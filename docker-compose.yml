@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:15.2-alpine
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password1234
+    
+  web:
+    build: .
+    # Run the compose outside RubyMine.
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/app
+      - bundle-volume:/usr/local/bundle
+    ports:
+      - "3000:3000"
+      - "1234:1234" # RubyMine
+    depends_on:
+      - db
+
+volumes:
+  bundle-volume:
+  db-volume:
